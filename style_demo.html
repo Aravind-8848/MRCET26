@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <META NAME="Viewport" content="width=device-width,initial-scale-1.0">
+            <title>Document</title>
+    </head>
+        <style>
+            body{
+                background-color: green;
+                color:white;
+            }
+           </style>
+    </head>
+    <body>
+        <h1>Welcome to style demo</h1><br>
+        <p> this is a paragraph demonstrating the styles applied to this document.</p>
+        <button onclick="f()">click!!</button>
+           
+        <script>
+            const colors = ['red', 'blue', 'green', 'purple', 'orange', 'black','lightgreen','thickblue','violet','pink'];
+        let index = 0;
+
+        setInterval(() => {
+            document.body.style.backgroundColor = colors[index];
+            index = (index+6) % colors.length;
+        }, 1000);
+        
+        </script>
+    </body>
+</html>

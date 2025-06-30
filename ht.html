@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width-device,initial-scale=1.0">
+          <title>Document</title>
+          <body>
+            <p id="greeting">HI there!</p>
+            <h1 class="he">this is heading tag!!</h1>
+             <h2 class="he">mrcet!</h2>
+            <p class="he">Aravind</p>
+            <input type="text" id="nameinput" placeholder="enter your name">
+            <button onclick="f()">greek</button><br></br>
+            <button class="text">click me</button>
+           
+            <script>
+            document.title="hello,world";
+                function f(){
+                    const name=document.getelementbyid("nameinput").value;
+                    document.getelementbyid("greeting").innertext='hello,${name}!';
+                    document.getelementbytagname("h2")[0].innertext='hello,${name}!';
+                    const newheading=document.createelement("h3");
+                    newheading.innertext='hello,${name}!';
+                    document.body.appendchild(newheading);
+                
+                }
+            </script>
+          </body>
+          </html>

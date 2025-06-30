@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width-device,initial-scale=1.0">
+          
+        <title>Document</title>
+        <style>
+    
+            div{
+                width:100px;
+                height:100px;
+                background-color: red;
+                animation: myAnimation 10s infinite alternate;
+            }@keyframes myAnimation{
+            0%{
+                left: 0px;
+                background-color:rgb(88, 19, 171);
+                opacity:1;
+                translate:translatex(0)
+            }
+            50%{
+                left:50px;
+                background-color: green;
+                opacity: 0.5;
+                translate:translatex(100px);
+
+            }
+            100%{
+                left:50px;
+                background-color: rgb(128, 0, 0);
+                opacity: 0.5;
+                translate:translatex(200px);
+
+            }
+            150%{
+                left:50px;
+                background-color: rgb(128, 49, 0);
+                opacity: 0.5;
+                translate:translatex(300px);
+            }
+        }
+            </style>
+        <body>
+        </body>
+    <div></div>
+    </head>

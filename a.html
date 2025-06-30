@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width-device,initial-scale=1.0">
+          <title>Document</title
+          </head>
+          <body>
+            <div class="container">
+                <h1>heading tag1!!</h1>
+                <p>Right-click on an element (or a blank area), and choose "Inspect" to see what
+                     elements are made up of (you will see both the HTML and the CSS). You can also
+                      edit the HTML or CSS on-the-fly in the Elements or Styles panel that opens.</p>
+            </div>
+             <div class="container">
+                      <h1>heading tag2</h1>
+                        <p>The link's destination is specified in the href attribute. 
+                            Attributes are used to provide additional information about HTML elements.
+                            You will learn more about attributes in a later chapter.</p>
+                    </div>
+                    <div clas="queryselectorall">
+                        <h1>QuerySelectorAll heading1</h1>
+                    </div>
+                    <button onclick="f()">click me</button>
+                    <script>
+                        function f(){
+                            const a= document.querySelectorAll("queryselectorall");
+                            a.forEach((element)=>{
+                                const newHeading=document.createElement("h2");
+                                newHeading.innerText="New Heading";
+                                element.appendChild(newHeading);
+                                const newparagraph=document.createElement("p");
+                                newparagraph.innertext="This is new paragraph added to the queryselectorall class.";
+                                element.appendChild(newparagraph);
+                            });
+                        
+                    </script>
+          </body>
+</html>

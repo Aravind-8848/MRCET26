@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: green;
+            color: white;
+        }
+        h1 {
+            background-color: red;
+            color: white;
+        }
+        button{
+            background-color: pink;
+            color: red;
+        }
+        a{
+            background-color: blueviolet;
+            padding-left: 10px;
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to style demo</h1>
+    <br>
+    <p>This is a paragraph demonstrating the styles applied to this document.</p>
+    <button onclick="f()">Click!!</button><br>
+    <a for="button">coose your option:</a><b>
+    <label for="checkbox">correct</label>
+             <input type="checkbox" id="correct"value="wrong">
+              <label for="checkbox">wrong</label>
+             <input type="checkbox" id="correct"value="wrong">
+
+    <script>
+        let colorIndex = 0;
+
+        const colorThemes = [
+            {
+                bodyBg: "black",
+                h1Bg: "blue",
+                h1Color: "white",
+                pColor: "yellow"
+            },
+            {
+                bodyBg: "purple",
+                h1Bg: "orange",
+                h1Color: "black",
+                pColor: "white"
+            },
+            {
+                bodyBg: "navy",
+                h1Bg: "lime",
+                h1Color: "darkblue",
+                pColor: "lightgray"
+            },
+            {
+                bodyBg: "maroon",
+                h1Bg: "pink",
+                h1Color: "white",
+                pColor: "gold"
+            },
+            {
+                bodyBg: "gray",
+                h1Bg: "teal",
+                h1Color: "yellow",
+                pColor: "black"
+            }
+        ];
+
+        function f() {
+            const theme = colorThemes[colorIndex];
+
+            document.body.style.backgroundColor = theme.bodyBg;
+            const heading = document.getElementsByTagName("h1")[0];
+            heading.style.backgroundColor = theme.h1Bg;
+            heading.style.color = theme.h1Color;
+            heading.style.fontSize = "25px";
+
+            const para = document.getElementsByTagName("p")[0];
+            para.style.color = theme.pColor;
+
+            // Move to next color set
+            colorIndex = (colorIndex + 1) % colorThemes.length;
+            
+           
+        
+        }
+    </script>
+</body>
+</html>

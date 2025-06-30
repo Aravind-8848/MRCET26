@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .division-block{
+      width:400px;
+      height:400px;
+      border:10px solid black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .btn{
+      padding:10px;
+      border-radius: 5px;
+      background-color: aquamarine;
+      border: none;
+      margin: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="division-block">
+    hello world
+  </div>
+  <button class="btn" onclick="remove()">change</button>
+  <script>
+    function remove(){
+      let div = document.querySelector('.division-block');
+      if(div.style.display==='none'){
+        div.style.display ='block';
+      }
+      else{
+        div.style.display="none";
+      }
+    }
+    div.style.display=(div.style.display==='block')?'none':'block';
+  </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Color Change</title>
+    <style>
+        body {
+            background-color: green;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 100px;
+            transition: background-color 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <h1>Background Color is Changing Automatically!</h1>
+    <p>Watch the background switch every second.</p>
+
+    <script>
+        function diss(){
+            let div=document.queryselector('.division-block');
+            if(div.style.display=='none'){
+                div.style.display='block';
+            }else{
+                div.style.display='none';
+            }
+        }
+    </script>
+</body>
+</html>

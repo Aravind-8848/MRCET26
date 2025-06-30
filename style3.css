@@ -1,0 +1,19 @@
+.flex{
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: green;
+    color:white;
+    gap: 50px;
+    justify-content:space-around;
+}
+.flex{
+    border:solid;
+    border-color: black;
+    border: radius 5px;;
+    height: 55px;
+    width: 55px;
+    background-color:blue;
+    align-items: center;
+    justify-content:space-between;
+}

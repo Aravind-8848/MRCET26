@@ -1,0 +1,16 @@
+
+button{
+    background:red;
+    color:blue;
+    height: 50px;
+    width: 100px;
+    padding: 25px;
+    border-style:double;
+    border-radius:25px;
+    outline-style:solid 25px;
+    outline-color:double;
+    margin: 20px 20px 20px 100px;
+}
+button-hover{
+  background-color:brown;
+}
