@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello World</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        input, button {
+            margin: 10px 0;
+            padding: 8px;
+            width: 250px;
+        }
+
+        #container {
+            border: 2px dashed #888;
+            height: 200px;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #955b0f;
+            position: relative;
+        }
+
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #28c928;
+            border: 1px soligreen#d01111;
+            width:max-content;
+        }
+
+        #coordinates {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: green;
+            font-size: 14px;
+            background-color: red;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Enter Your Details</h2>
+    <input type="text" id="name" placeholder="Enter name">
+    <input type="number" id="age" placeholder="Enter age">
+    <input type="email" id="email" placeholder="Enter email">
+    <button id="submit">Submit</button>
+
+    <div id="output"></div>
+
+    <div id="container">
+        <p>Move your mouse over this box to see coordinates:</p>
+        <div id="coordinates">X: 0, Y: 0</div>
+    </div>
+
+    <script>
+        // Form submit event
+        document.getElementById('submit').addEventListener('click', function () {
+            const name = document.getElementById('name').value.trim();
+            const age = document.getElementById('age').value.trim();
+            const email = document.getElementById('email').value.trim();
+
+            if (!name || !age || !email) {
+                document.getElementById('output').innerHTML = '<p style="color: red;">Please fill in all fields.</p>';
+                return;
+            }
+
+            document.getElementById('output').innerHTML = `
+                <h3>Submitted Details:</h3>
+                <p><strong>Name:</strong> ${name}</p>
+                <p><strong>Age:</strong> ${age}</p>
+                <p><strong>Email:</strong> ${email}</p>
+            `;
+        });
+
+        // Mousemove event for showing coordinates
+        document.getElementById('container').addEventListener('mousemove', function (event) {
+            const x = event.clientX;
+            const y = event.clientY;
+            document.getElementById('coordinates').textContent = `X: ${x}, Y: ${y}`;
+        });
+        document.body.addEventListener("keypress",function(event){
+            document.body.style.backgroundColor="red";
+            document.body.style.color="white";
+        });
+           
+    </script>
+
+</body>
+</html>

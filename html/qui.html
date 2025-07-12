@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz App</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.9/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const QuizApp = () => {
+      const [questions, setQuestions] = useState([]);
+      const [currentQuestion, setCurrentQuestion] = useState(0);
+      const [score, setScore] = useState(0);
+      const [selectedAnswer, setSelectedAnswer] = useState('');
+      const [timer, setTimer] = useState(10);
+      const [isQuizOver, setIsQuizOver] = useState(false);
+      const [leaderboard, setLeaderboard] = useState(JSON.parse(localStorage.getItem('leaderboard')) || []);
+      const [answerStatus, setAnswerStatus] = useState(null);
+      const [answers, setAnswers] = useState([]);
+
+      // Fetch questions from Open Trivia Database
+      useEffect(() => {
+        axios.get('https://opentdb.com/api.php?amount=15&type=multiple')
+          .then(response => {
+            const formattedQuestions = response.data.results.map(q => ({
+              question: q.question.replace(/&quot;/g, '"').replace(/&#039;/g, "'"),
+              answers: [...q.incorrect_answers, q.correct_answer]
+                .map(a => a.replace(/&quot;/g, '"').replace(/&#039;/g, "'"))
+                .sort(() => Math.random() - 0.5),
+              correctAnswer: q.correct_answer.replace(/&quot;/g, '"').replace(/&#039;/g, "'")
+            }));
+            setQuestions(formattedQuestions);
+          })
+          .catch(error => console.error('Error fetching questions:', error));
+      }, []);
+
+      // Timer logic
+      useEffect(() => {
+        if (timer > 0 && !isQuizOver) {
+          const interval = setInterval(() => setTimer(t => t - 1), 1000);
+          return () => clearInterval(interval);
+        } else if (timer === 0 && !isQuizOver) {
+          handleAnswerSubmit();
+        }
+      }, [timer, isQuizOver]);
+
+      // Handle answer selection
+      const handleAnswerSubmit = () => {
+        if (selectedAnswer) {
+          const isCorrect = selectedAnswer === questions[currentQuestion].correctAnswer;
+          setAnswers([...answers, { question: questions[currentQuestion].question, selected: selectedAnswer, isCorrect }]);
+          if (isCorrect) setScore(score + 1);
+          setAnswerStatus(isCorrect ? 'correct' : 'incorrect');
+          setTimeout(() => {
+            setAnswerStatus(null);
+            setSelectedAnswer('');
+            if (currentQuestion + 1 < questions.length) {
+              setCurrentQuestion(currentQuestion + 1);
+              setTimer(10);
+            } else {
+              setIsQuizOver(true);
+              const newScore = { score, date: new Date().toLocaleString(), id: Date.now() };
+              const updatedLeaderboard = [...leaderboard, newScore].sort((a, b) => b.score - a.score).slice(0, 5);
+              setLeaderboard(updatedLeaderboard);
+              localStorage.setItem('leaderboard', JSON.stringify(updatedLeaderboard));
+            }
+          }, 1000);
+        } else {
+          setAnswerStatus('incorrect');
+          setAnswers([...answers, { question: questions[currentQuestion].question, selected: 'No answer', isCorrect: false }]);
+          setTimeout(() => {
+            setAnswerStatus(null);
+            if (currentQuestion + 1 < questions.length) {
+              setCurrentQuestion(currentQuestion + 1);
+              setTimer(10);
+            } else {
+              setIsQuizOver(true);
+              const newScore = { score, date: new Date().toLocaleString(), id: Date.now() };
+              const updatedLeaderboard = [...leaderboard, newScore].sort((a, b) => b.score - a.score).slice(0, 5);
+              setLeaderboard(updatedLeaderboard);
+              localStorage.setItem('leaderboard', JSON.stringify(updatedLeaderboard));
+            }
+          }, 1000);
+        }
+      };
+
+      // Calculate star rating
+      const getStarRating = () => {
+        const percentage = (score / questions.length) * 100;
+        return percentage >= 80 ? 5 : percentage >= 60 ? 4 : percentage >= 40 ? 3 : percentage >= 20 ? 2 : 1;
+      };
+
+      // Reset quiz
+      const resetQuiz = () => {
+        setCurrentQuestion(0);
+        setScore(0);
+        setSelectedAnswer('');
+        setTimer(10);
+        setIsQuizOver(false);
+        setAnswers([]);
+      };
+
+      return (
+        <div className="min-h-screen bg-gray-100 p-4 flex items-center justify-center">
+          <div className="container mx-auto max-w-2xl bg-white rounded-lg shadow-lg p-6">
+            {!isQuizOver ? (
+              <>
+                <div className="mb-4">
+                  <div className="relative h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                      className="absolute h-full bg-blue-500 transform origin-left transition-transform duration-1000"
+                      style={{ transform: `scaleX(${timer / 10})` }}
+                    ></div>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">Time left: {timer}s</p>
+                </div>
+                <div className="mb-4">
+                  <div className="relative h-4 bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                      className="absolute h-full bg-green-500 transform origin-left transition-transform duration-500"
+                      style={{ transform: `scaleX(${(currentQuestion + 1) / questions.length})` }}
+                    ></div>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">Question {currentQuestion + 1} of {questions.length}</p>
+                </div>
+                {questions.length > 0 && (
+                  <>
+                    <h2 className="text-xl font-semibold mb-4" dangerouslySetInnerHTML={{ __html: questions[currentQuestion].question }}></h2>
+                    <div className="space-y-4">
+                      {questions[currentQuestion].answers.map((answer, index) => (
+                        <label
+                          key={index}
+                          className={`block p-3 border rounded-lg cursor-pointer transition-colors ${
+                            answerStatus && answer === questions[currentQuestion].correctAnswer
+                              ? 'bg-green-100 border-green-500'
+                              : answerStatus && answer === selectedAnswer && !answerStatus.includes('correct')
+                              ? 'bg-red-100 border-red-500'
+                              : 'bg-gray-50 hover:bg-gray-100'
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="answer"
+                            value={answer}
+                            checked={selectedAnswer === answer}
+                            onChange={() => setSelectedAnswer(answer)}
+                            className="hidden"
+                          />
+                          <span className="flex items-center">
+                            <span
+                              className={`w-5 h-5 mr-2 border-2 rounded-full flex items-center justify-center ${
+                                selectedAnswer === answer ? 'border-blue-500 bg-blue-500' : 'border-gray-400'
+                              }`}
+                            >
+                              {selectedAnswer === answer && <span className="w-2 h-2 bg-white rounded-full"></span>}
+                            </span>
+                            {answer}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                    <button
+                      onClick={handleAnswerSubmit}
+                      className="mt-6 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                    >
+                      Submit Answer
+                    </button>
+                  </>
+                )}
+              </>
+            ) : (
+              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+                <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+                  <h2 className="text-2xl font-bold mb-4">Quiz Results</h2>
+                  <p className="text-lg mb-2">Score: {score} / {questions.length}</p>
+                  <div className="flex mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <svg
+                        key={i}
+                        className={`w-6 h-6 ${i < getStarRating() ? 'text-yellow-400' : 'text-gray-300'}`}
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <div className="mb-4 max-h-60 overflow-y-auto">
+                    <h3 className="text-lg font-semibold">Answer Summary:</h3>
+                    {answers.map((ans, index) => (
+                      <div key={index} className="mt-2">
+                        <p dangerouslySetInnerHTML={{ __html: ans.question }}></p>
+                        <p className={ans.isCorrect ? 'text-green-600' : 'text-red-600'}>
+                          Your answer: {ans.selected} {ans.isCorrect ? '(Correct)' : '(Incorrect)'}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">Leaderboard</h3>
+                  <ul className="mb-4">
+                    {leaderboard.map((entry, index) => (
+                      <li key={entry.id} className="text-sm">
+                        {index + 1}. Score: {entry.score}, Date: {entry.date}
+                      </li>
+                    ))}
+                  </ul>
+                  <button
+                    onClick={resetQuiz}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                  >
+                    Play Again
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<QuizApp />, document.getElementById('root'));
+
+    // Tailwind custom styles
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-in-out',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' }
+            },
+          },
+        },
+      },
+    };
+  </script>
+</body>
+</html>
